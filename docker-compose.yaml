@@ -1,0 +1,30 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: /data/postgres
+    volumes:
+       - ./init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    restart: unless-stopped
+  
+  api:
+    build:
+      context: .
+    depends_on:
+      - postgres
+    tty: true
+    env_file:
+      - .env
+    ports:
+      - 6789:6789
+
+volumes:
+  postgres:
+    driver: local
