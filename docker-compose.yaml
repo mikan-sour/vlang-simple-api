@@ -13,10 +13,13 @@ services:
       - '${DB_PORT}:${DB_PORT}'
     expose:
       - '${DB_PORT}'
+    volumes:
+      - "./init/init.sql:/docker-entrypoint-initdb.d/1.sql"
   
   api:
     build:
       context: .
+    restart: always
     depends_on:
       - db
     tty: true

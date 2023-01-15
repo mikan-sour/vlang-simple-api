@@ -1,15 +1,19 @@
 module api
 
-import nedpals.vex.ctx
+
+import mikan-sour.mikanvex.ctx
+import mikan-sour.mikanvex.router
 
 interface Api {
 	healthcheck(req &ctx.Req, mut res ctx.Resp)
 }
 
-struct ApiImpl {
-
+[heap]
+pub struct ApiImpl {
+pub mut:
+	router router.Router
 }
 
-// pub fn new_api() Api {
-// 	return ApiImpl{}
-// }
+pub fn new_api(router router.Router) ApiImpl {
+	return ApiImpl{ router }
+}

@@ -10,6 +10,7 @@ up:
 env:
 	cp ./.env.sample ./.env
 
+# TODO: change to mysql
 run:
 	brew services stop postgresql@14
 	brew services start postgresql@14
