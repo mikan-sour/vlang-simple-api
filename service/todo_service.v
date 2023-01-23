@@ -82,7 +82,7 @@ pub fn (ts &TodoServiceImpl) update_todo(db mysql.Connection, id string, text st
         return updated_at
 }
 
-pub fn (ts &TodoServiceImpl) toggle_todo_active(db mysql.Connection, id string) !bool {
+pub fn (ts &TodoServiceImpl) toggle_todo_active(db mysql.Connection, id string) !string {
         updated_at := time.now().format_ss()
         db.query('UPDATE todos SET active = !active,  updated_at = "$updated_at" WHERE id = $id.int();')!
         return updated_at

@@ -9,16 +9,16 @@ import service
 struct App {
 	vweb.Context
 pub mut: 
-	db 			 mysql.Connection
-	healthcheck_service &service.HealthcheckServiceImpl = &service.HealthcheckServiceImpl{}
-	todo_service &service.TodoServiceImpl = &service.TodoServiceImpl{}
+	db 			 			mysql.Connection
+	healthcheck_service 	&service.HealthcheckServiceImpl = &service.HealthcheckServiceImpl{}
+	todo_service 			&service.TodoServiceImpl = &service.TodoServiceImpl{}
 }
 
 pub fn new_api(db mysql.Connection) &App {
 	return &App{
-		db:db,
-		healthcheck_service: service.new_healthcheck_service()
-		todo_service:service.new_todo_service()
+		db:						db,
+		healthcheck_service: 	service.new_healthcheck_service()
+		todo_service:			service.new_todo_service()
 	}
 }
 

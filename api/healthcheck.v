@@ -2,8 +2,8 @@ module api
 
 import vweb
 
-import utils
 import service
+import utils
 
 ['/api/health';get]
 pub fn (mut app App) healthcheck() vweb.Result{

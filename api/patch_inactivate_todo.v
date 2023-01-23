@@ -1,6 +1,5 @@
 module api
 
-import time
 import vweb
 
 import utils
