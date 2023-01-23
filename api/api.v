@@ -27,8 +27,3 @@ pub fn (mut app App) before_request() {
 	log_line := "/$app.req.method $app.req.url"
     println(log_line.capitalize())
 }
-
-struct ApiResponse[T] {
-	status string
-	result T
-}

@@ -1,15 +1,16 @@
 module service
 
 import mysql
+import time
 
 pub interface TodoService {
 mut:
         get_todos(db mysql.Connection, query map[string]string) ![]map[string]string
         get_one_todo(db mysql.Connection, id string) !map[string]string
-        // pub fn create_new_todo()
-        // pub fn update_todo()
-        // pub fn toggle_todo_active()
-        pub fn delete_todo()
+        create_new_todo(db mysql.Connection, text string)!bool
+        update_todo(db mysql.Connection, id string, text string) !string
+        toggle_todo_active(db mysql.Connection, id string) !string
+        delete_todo(db mysql.Connection, id string) !bool
 }
 
 [heap]
@@ -60,8 +61,34 @@ pub fn (ts &TodoServiceImpl) get_todos(db mysql.Connection, query map[string]str
 pub fn (ts &TodoServiceImpl) get_one_todo(db mysql.Connection, id string) !map[string]string {
 	todo_result := db.query('SELECT * FROM todos WHERE id = $id.int() LIMIT 1;') or {
 		eprint('${err}')
-        return error('get_one_todo service failed, db query: ${err}')
+                return error('get_one_todo service failed, db query: ${err}')
 	}
 
-    return todo_result.maps()[0]
+    result := todo_result.maps()[0] or {
+        return error('no record with id ${id} in the database')
+    }
+
+    return result
+}
+
+pub fn (ts &TodoServiceImpl) create_new_todo(db mysql.Connection, text string)!bool {
+        db.query('INSERT INTO todos (todo_text) VALUES ("$text")')!
+        return true
+}
+
+pub fn (ts &TodoServiceImpl) update_todo(db mysql.Connection, id string, text string) !string {
+        updated_at := time.now().format_ss()
+        db.query('UPDATE todos SET todo_text = "$text",  updated_at = "$updated_at" WHERE id = $id.int();')!
+        return updated_at
+}
+
+pub fn (ts &TodoServiceImpl) toggle_todo_active(db mysql.Connection, id string) !bool {
+        updated_at := time.now().format_ss()
+        db.query('UPDATE todos SET active = !active,  updated_at = "$updated_at" WHERE id = $id.int();')!
+        return updated_at
+}
+
+pub fn (ts &TodoServiceImpl) delete_todo(db mysql.Connection, id string) !bool {
+        db.query('DELETE FROM todos WHERE id = $id.int();')!
+        return true
 }

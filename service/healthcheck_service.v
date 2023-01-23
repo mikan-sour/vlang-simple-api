@@ -3,7 +3,7 @@ module service
 import mysql
 import time
 
-struct Healthcheck {
+pub struct Healthcheck {
 	ok bool
 	time time.Time
 }
