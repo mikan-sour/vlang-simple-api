@@ -1,19 +1,34 @@
 module api
 
+import vweb
+import mysql
 
-import mikan-sour.mikanvex.ctx
-import mikan-sour.mikanvex.router
-
-interface Api {
-	healthcheck(req &ctx.Req, mut res ctx.Resp)
-}
+import service
 
 [heap]
-pub struct ApiImpl {
-pub mut:
-	router router.Router
+struct App {
+	vweb.Context
+pub mut: 
+	db 			 mysql.Connection
+	healthcheck_service &service.HealthcheckServiceImpl = &service.HealthcheckServiceImpl{}
+	todo_service &service.TodoServiceImpl = &service.TodoServiceImpl{}
 }
 
-pub fn new_api(router router.Router) ApiImpl {
-	return ApiImpl{ router }
+pub fn new_api(db mysql.Connection) &App {
+	return &App{
+		db:db,
+		healthcheck_service: service.new_healthcheck_service()
+		todo_service:service.new_todo_service()
+	}
+}
+
+// a middleware
+pub fn (mut app App) before_request() {
+	log_line := "/$app.req.method $app.req.url"
+    println(log_line.capitalize())
+}
+
+struct ApiResponse[T] {
+	status string
+	result T
 }

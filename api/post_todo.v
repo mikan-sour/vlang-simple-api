@@ -1,33 +1,24 @@
 module api
 
-import time
+import json
+import vweb
 
-import database
 import repository
 
-import mikan-sour.mikanvex.ctx
+['/api/todo';post]  
+pub fn (mut app App) post_todo() vweb.Result{
 
-pub fn post_todo(req &ctx.Req, mut res ctx.Resp){
+	body := json.decode(repository.Todo, app.req.data) or {
+        app.set_status(400, '')
+        return app.text('Failed to decode json, error: $err')
+	}
 
-	mut db := database.get_db(req) or {
+	app.db.query('INSERT INTO todos (todo_text) VALUES ("$body.todo_text")') or {
 		println(err)
-		res.send_status(500)
-		return
+		app.set_status(500, '')
+		return app.text('$err')
 	}
 
-	mut post_data := req.parse_form() or {
-		eprintln('Failed to parse form data.')
-		res.send_status(500)
-		return
-	}
-
-	todo_text := post_data['todo_text']
-
-	db.query('INSERT INTO todos (todo_text) VALUES ("$todo_text")') or {
-		eprintln(err)
-		res.send_status(500)
-		return
-	}
-
-	res.send_status(201)
+	app.set_status(201, '')
+	return app.text('ok')
 }

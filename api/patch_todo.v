@@ -1,36 +1,33 @@
 module api
 
+import json
 import time
+import vweb
 
-import database
 import repository
 
-import mikan-sour.mikanvex.ctx
+['/api/todo/:id';patch]  
+pub fn (mut app App) patch_todo(id string) vweb.Result{
 
-pub fn patch_todo(req &ctx.Req, mut res ctx.Resp){
+	body := json.decode(repository.Todo, app.req.data) or {
+        app.set_status(400, '')
+        return app.text('Failed to decode json, error: $err')
+	}
 
-	mut db := database.get_db(req) or {
+	if body.todo_text == '' {
+		app.set_status(400, '')
+        return app.text('no todo_text was sent in patch request.')
+	}
+
+	updated_at := time.now().format_ss()
+
+	app.db.query('UPDATE todos SET todo_text = "$body.todo_text",  updated_at = "$updated_at" WHERE id = $id.int();') or {
 		println(err)
-		res.send_status(500)
-		return
+		app.set_status(500, '')
+		return app.text('$err')
 	}
 
-	mut patch_data := req.parse_form() or {
-		eprintln('Failed to parse form data.')
-		res.send_status(500)
-		return
-	}
-
-	todo_id := patch_data['id'].int()
-	todo_text := patch_data['todo_text']
-	todo_active := repository.is_true(patch_data['todo_active'])
-	todo_updated_at := time.now().format_ss()
-
-	db.query('INSERT INTO todos (todo_text, active, updated_at) VALUES ("$todo_text", $todo_active, "$todo_updated_at") WHERE id == $todo_id') or {
-		eprintln(err)
-		res.send_status(500)
-		return
-	}
-
-	res.send_status(201)
+	app.set_status(200, '')
+	return app.text('$updated_at')
 }
+

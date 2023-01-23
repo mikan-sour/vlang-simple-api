@@ -8,9 +8,6 @@ WORKDIR /app
 
 COPY . .
 
-# RUN v install nedpals.vex
-# RUN v install --git https://github.com/mikan-sour/vex.git
-RUN v install mikan-sour.mikanvex
 RUN v install zztkm.vdotenv
 
 EXPOSE 6789

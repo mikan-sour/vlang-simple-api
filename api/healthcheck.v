@@ -1,20 +1,11 @@
 module api
 
-import mikan-sour.mikanvex.ctx
+import vweb
 
-import time
+['/api/health';get]
+pub fn (mut app App) healthcheck() vweb.Result{
 
-struct Healthcheck {
-	ok bool
-	time time.Time
-}
-
-pub fn healthcheck(req &ctx.Req, mut res ctx.Resp){
-
-	response := Healthcheck {
-		ok:true,
-		time: time.now()
-	}
+	healthcheck := app.healthcheck_service.healthcheck(mut app.db)
 	
-	res.send_json<Healthcheck>(response,200)
+	return app.json(healthcheck)
 }

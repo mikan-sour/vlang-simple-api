@@ -1,34 +1,23 @@
 module database
 
 import mysql
+import os
 import time
-
-import mikan-sour.mikanvex.ctx
-
-pub const db_ctx_key = 'db'
-
-pub fn get_db(req &ctx.Req) ?&mysql.Connection {
-	raw_db := req.ctx.value(db_ctx_key) ?
-	if raw_db is mysql.Connection {
-		return raw_db
-	}
-	return none
-}
 
 pub fn db_init() !mysql.Connection {
 	mut db := mysql.Connection{
-		username: 'mysql'
-		password: 'mysql'
-		dbname: 'todos'
-		port: 3306
-		host: 'db'
+		username: os.getenv('DB_USERNAME')
+		password: os.getenv('DB_PASSWORD')
+		dbname: os.getenv('DB_NAME')
+		port: os.getenv('DB_PORT').u32()
+		host: os.getenv('DB_HOST')
 	}
 
 	time.sleep(3 * time.second)
-	db.connect()!
 	
+	db.connect()!
+
 	db.select_db('todos')!
 	
 	return db
 }
-

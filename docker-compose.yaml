@@ -14,7 +14,7 @@ services:
     expose:
       - '${DB_PORT}'
     volumes:
-      - "./init/init.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./database/init.sql:/docker-entrypoint-initdb.d/1.sql"
   
   api:
     build:
