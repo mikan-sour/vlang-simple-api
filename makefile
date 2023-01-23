@@ -15,3 +15,6 @@ run:
 	brew services stop postgresql@14
 	brew services start postgresql@14
 	v -enable-globals run main.v
+
+test:
+	v test .
