@@ -7,7 +7,9 @@ so I relied heavily on:
 
 ## How to run
 1. create the .env file
+> make env
 2. run the app using docker
+> make up
 3. execute any of the API routes
 
 ## The API
@@ -22,3 +24,6 @@ so I relied heavily on:
 ### Post / Patch body
 You only need to send the value `todo_text` in a json object. 
 The [schema](vlang_simple_api/repository/todo.v) of todos is quite simple
+> {
+>   "todo_text":"laundry"
+> }
