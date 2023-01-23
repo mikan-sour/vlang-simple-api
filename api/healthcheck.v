@@ -1,21 +1,14 @@
 module api
 
-import nedpals.vex.ctx
+import vweb
 
-import time
+import service
+import utils
 
-struct Healthcheck {
-	ok bool
-	time time.Time
-}
+['/api/health';get]
+pub fn (mut app App) healthcheck() vweb.Result{
 
-pub fn healthcheck(req &ctx.Req, mut res ctx.Resp){
-
-	response := Healthcheck {
-		ok:true,
-		time: time.now()
-	}
+	healthcheck := app.healthcheck_service.healthcheck(mut app.db)
 	
-	res.send_json<Healthcheck>(response,200)
-
+	return app.json(utils.response[service.Healthcheck](true, healthcheck))
 }

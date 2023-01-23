@@ -1,13 +1,13 @@
 FROM thevlang/vlang:alpine
 
 RUN apk update &&\
-    apk add postgresql-dev
+    apk add mysql mysql-client pkgconfig && \
+    apk add gcc mariadb-connector-c-dev mariadb-dev
  
 WORKDIR /app
 
 COPY . .
 
-RUN v install nedpals.vex
 RUN v install zztkm.vdotenv
 
 EXPOSE 6789
